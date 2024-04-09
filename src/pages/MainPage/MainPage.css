@@ -1,0 +1,30 @@
+.main_page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 50px 20px 20px 20px;
+}
+
+.input_wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0 15px 0;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  margin: 0;
+}
+
+.response_wrapper {
+  background-color: var(--tg-theme-section-bg-color);
+  padding: 15px;
+  overflow: auto;
+  height: 100%;
+}
+.response {
+  overflow: auto;
+}
