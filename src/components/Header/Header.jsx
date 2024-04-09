@@ -1,14 +1,37 @@
 import React from 'react';
-import Button from '../Button/Button';
-import { useTelegram } from '../../hooks/useTelegram';
-import './Header.css';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { TonConnectButton } from '@tonconnect/ui-react';
 
-const Header = () => {
+import { useTelegram } from '../../hooks/useTelegram';
+
+import Button from '../Button/Button';
+
+import './Header.css';
+import CogIcon from '../../img/CogIcon';
+
+const Header = ({ balance }) => {
   const { user, onClose } = useTelegram();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const onMain = () => {
+    if (location.pathname !== '/') {
+      navigate('/');
+    } else {
+      navigate('/payment');
+    }
+  };
   return (
     <div className={'header'}>
-      <Button onClick={onClose}>Закрыть</Button>
-      <span className={'username'}>{user?.username}</span>
+      <div className={'left'}>
+        <span onClick={onMain}>
+          <CogIcon />
+        </span>
+        <span>{balance} TON</span>
+      </div>
+      <div>
+        <TonConnectButton className="button_connect" />
+      </div>
     </div>
   );
 };

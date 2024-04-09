@@ -1,13 +1,19 @@
 .header {
   width: 100%;
-  height: 50px;
   display: flex;
-  align-items: center;
-  padding: 0 20px;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 10px 20px;
   background-color: var(--tg-theme-header-bg-color);
   position: absolute;
 }
 
-.username {
-  margin-left: auto;
+.left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: default;
+  svg {
+    cursor: pointer;
+  }
 }
