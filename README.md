@@ -1,70 +1,76 @@
-# Getting Started with Create React App
+# One AI (oneai-front)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Фронтенд **Telegram Mini App** на React: подключение кошелька TON через **TonConnect**, авторизация по данным Telegram и взаимодействие с бэкендом для AI-запросов и пополнения баланса в TON.
 
-## Available Scripts
+## Возможности
 
-In the project directory, you can run:
+- **TonConnect** — без кошелька показывается экран с кнопкой подключения; после подключения адреса открывается основной интерфейс.
+- **Авторизация** — при загрузке отправляется `POST` на `/auth` с `queryId` и данными пользователя из `Telegram.WebApp` (включая адрес кошелька); с сервера приходит баланс.
+- **Главная страница** — поле ввода запроса и отправка на `/prompt`; отображается ответ сервера и обновляется баланс.
+- **Страница платежей** (`/payment`) — кнопки пополнения на фиксированные суммы (0.01–10 TON); запросы уходят на `/payment` с `queryId`, сгенерированным `hash` и суммой в нанотонах.
 
-### `npm start`
+Навигация между главной и оплатой — через иконку в шапке (переключение маршрутов `/` и `/payment`).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Стек
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- React 18, React Router 6
+- Create React App (`react-scripts` 5)
+- `@tonconnect/ui-react` — провайдер и кнопка TonConnect
+- Telegram Web App API (`telegram-web-app.js` в `public/index.html`)
 
-### `npm test`
+## Бэкенд
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+API по умолчанию: `https://saturn.fanil.ru`
 
-### `npm run build`
+| Метод | Назначение |
+|--------|------------|
+| `POST /auth` | Авторизация и получение баланса |
+| `POST /prompt` | Отправка промпта (`queryId`, `message`, `address`) |
+| `POST /payment` | Инициация/учёт платежа (`queryId`, `hash`, `amount`, `address`) |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Манифест TonConnect: `https://saturn.fanil.ru/tonconnect-manifest.json` (задаётся в `src/index.js` у `TonConnectUIProvider`).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Требования
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Node.js и npm (версии, совместимые с CRA 5)
 
-### `npm run eject`
+## Установка и запуск
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm install
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Сборка для продакшена:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm build
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Тесты (шаблон CRA):
 
-## Learn More
+```bash
+npm test
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Структура проекта (основное)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+src/
+  App.jsx              — маршруты, TonConnect, авторизация, баланс
+  index.js             — TonConnectUIProvider, BrowserRouter
+  hooks/useTelegram.js — Telegram WebApp, fetch /auth
+  pages/
+    MainPage/          — промпт и ответ
+    PaymentPage/       — пополнение баланса
+  components/          — Header, Button
+  lib/hashGenerate.js  — генерация hash для платежей
+```
 
-### Code Splitting
+## Запуск в Telegram
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Приложение рассчитано на открытие внутри Telegram как Web App (нужны `initData` и `Telegram.WebApp`). Для локальной разработки без Telegram потребуется мок окружения или прокси — иначе `window.Telegram.WebApp` может быть недоступен.
 
-### Analyzing the Bundle Size
+## Лицензия
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Приватный проект (`"private": true` в `package.json`).
